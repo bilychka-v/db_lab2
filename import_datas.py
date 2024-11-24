@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from faker import Faker
 import random
 import mysql.connector
+import time
 
 # Підключення до MongoDB
 mongo_client = MongoClient("mongodb://localhost:27017/")
@@ -178,6 +179,29 @@ def populate_all_tables(records_count=1000):
 
     print(f"Database populated: {records_count} users, {len(chat_ids)} chats.")
 
+def test_performance(records_count=1000):
+    # Тестування MongoDB
+    start_time = time.time()
+    populate_all_tables(records_count)  # Заповнення таблиць MongoDB
+    mongo_duration = time.time() - start_time
+    print(f"MongoDB: {mongo_duration:.4f} seconds")
+
+    # Тестування MySQL
+    reset_mysql_tables()  # Очищення таблиць MySQL
+    start_time = time.time()
+    populate_all_tables(records_count)  # Заповнення таблиць MySQL
+    mysql_duration = time.time() - start_time
+    print(f"MySQL: {mysql_duration:.4f} seconds")
+
+# Порівняння швидкості виконання
+    if mongo_duration < mysql_duration:
+        print("MongoDB працює швидше.")
+    elif mysql_duration < mongo_duration:
+        print("MySQL працює швидше.")
+    else:
+        print("Час виконання однаковий для MongoDB та MySQL.")
+
 # Основна функція для тестування
 if __name__ == "__main__":
     populate_all_tables(records_count=1000)
+    test_performance(records_count=1000)
