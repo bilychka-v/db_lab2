@@ -1,0 +1,4 @@
+db.user_profiles.find()
+db.chats.find()
+db.chat_members.find()
+
